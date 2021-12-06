@@ -1,9 +1,30 @@
 const express = require('express')
+const path = require('path');
+
 const app = express()
 const port = 3000
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
+})
+
+app.get('/hello', (req, res) => {
+    res.send('Hello World 2!')
+})
+
+app.get('/home', (req, res) => {
+    res.sendFile(path.join(__dirname, '/home.html'));
+})
+
+function sleep(duration) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => resolve(`Slept for ${duration}s`), duration * 1000)
+    })
+}
+
+app.get('/non-stream', async (req, res) => {
+    const result = await sleep(5);
+    res.send(result);
 })
 
 app.listen(port, () => {
@@ -23,7 +44,7 @@ app.get('/stream', function (req, res, next) {
 
 
 var sendAndSleep = function (response, counter) {
-    if (counter > 10) {
+    if (counter > 5) {
         response.end();
     } else {
         response.write(" ;i=" + counter);
